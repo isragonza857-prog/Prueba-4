@@ -4,73 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Buzón de Amor 💌</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+
     <style>
-        :root { --rosa: #ff4d6d; --texto: #590d22; }
-        body { 
-            background-image: url('https://i.postimg.cc/LXs6wcwy/65a54829cbbe07a6302459f35420ec2e.jpg');
-            background-size: cover; background-position: center; background-attachment: fixed;
-            font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; color: var(--texto);
-        }
-        h1 { margin: 15px 0; font-size: 1.5rem; text-align: center; background: rgba(255, 255, 255, 0.7); padding: 8px 20px; border-radius: 50px; backdrop-filter: blur(4px); position: relative; }
-        #contenedor { width: 100%; max-width: 400px; position: relative; }
-        .carta { background: rgba(255, 255, 255, 0.9); padding: 15px; margin-bottom: 12px; border-radius: 15px; border-left: 6px solid var(--rosa); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .bloqueada { background: rgba(255, 255, 255, 0.6); border-left-color: #adb5bd; text-align: center; }
-        .tag { display: block; font-size: 0.7rem; color: var(--rosa); font-weight: bold; margin-bottom: 4px; }
-        .proxima { font-weight: bold; font-size: 1.1rem; color: var(--texto); margin: 5px 0; }
+        :root { --rosa: #ff4d6d; --fondo: #fff0f3; --texto: #590d22; }
+        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--texto); overflow-x: hidden; }
+        h1 { margin: 20px 0; font-size: 1.6rem; text-align: center; z-index: 2; }
+        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 25px; cursor: pointer; z-index: 2; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
+        #contenedor { width: 100%; max-width: 400px; z-index: 2; min-height: 200px; }
+        .carta { background: white; padding: 20px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--rosa); animation: fadeIn 0.5s ease; }
+        .bloqueada { background: rgba(255, 255, 255, 0.6); border-left-color: #adb5bd; opacity: 0.8; }
+        .tiempo-tag { display: block; font-size: 0.75rem; color: var(--rosa); font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <h1>💌 Nuestro Buzón</h1>
+    <h1>💌 Nuestro Buzón Mágico</h1>
+    <button class="btn-notif" id="btnActivar" onclick="activarNotificaciones()">🔔 Activar Notificaciones</button>
+    
     <div id="contenedor"></div>
 
     <script>
-        const frases = ["¡Te amo! ❤️", "Eres lo mejor de mi día 😍", "Mi lugar favorito eres tú 🏠", "Eres mi vida 😍", "Te extraño 🌹", "Siempre juntos 👩‍❤️‍👨", "Eres magia ✨", "Mi mundo entero 🌎", "Gracias por existir 🤗", "Te pienso siempre 💭", "Sueño contigo 🌙", "Eres mi todo 💖", "Te amo cada día más 📈", "Eres mi debilidad 💋", "Me haces muy feliz 😊", "Contigo todo es mejor 🌟", "Eres única 💎", "Mi corazón es tuyo 💓", "Eres mi mejor regalo 🎁", "Te quiero siempre ♾️", "Eres mi paz 🕊️", "Brillas más que el sol ☀️", "Eres mi hogar 🗝️", "Te amo infinito 🌌", "Eres mi tesoro 💰", "Eres mi favorita 🥰", "Te amo demasiado 💘", "Mi razón de sonreír 😁", "Eres mi bendición 🙏", "Mi alma gemela 🧩", "Te amo locamente 🤪", "Eres mi motivación 💪", "Siempre en mi mente 🧠", "Eres mi alegría 😄", "Te adoro 🙇‍♂️", "Mi vida es tuya 💓", "Eres increíble 🌈", "Amor sin fin 🛑", "Eres mi ángel 😇", "Te amo con el alma 👻", "Eres mi joya 💍", "Te amo, preciosa 👸", "Eres mi suerte 🍀", "Te amo cada segundo ⏱️", "Mi destino eres tú 🛣️", "Eres perfecta 🎯", "Te amo, corazón 💖", "Eres mi cielo ☁️", "Siempre tú 👈", "Te amo, hermosa 🌸", "Mi refugio 🏰", "Eres mi luz 💡", "Te amo tanto 🔥", "Mi todo 🥇", "Eres mi calma 🌊", "Amor de mi vida 💍", "Eres mi realidad 👓", "Te elijo siempre 🗳️", "Mi aventura 🧭", "¡Un mes de amor! ✨"];
+        const frases = [
+            { id: 1, texto: "¡Empieza nuestra semana de amor! ❤️", horas: 0 },
+            { id: 2, texto: "Eres lo mejor de mi día 😍", horas: 12 },
+            { id: 3, texto: "Un mensajito para el día 2 🌹", horas: 24 },
+            { id: 4, texto: "Nunca olvides cuánto te amo 💋", horas: 36 },
+            { id: 5, texto: "Día 3: Eres mi persona favorita ✨", horas: 48 },
+            { id: 6, texto: "Tu sonrisa es mi motor 💖", horas: 60 },
+            { id: 7, texto: "Día 4: Mitad de semana, te amo más 🌎", horas: 72 },
+            { id: 8, texto: "Gracias por estar conmigo 🤗", horas: 84 },
+            { id: 9, texto: "Día 5: ¡Ya casi es fin de semana! 🎁", horas: 96 },
+            { id: 10, texto: "Me encantas cada segundo 😍", horas: 108 },
+            { id: 11, texto: "Día 6: Mi corazón es tuyo 👩‍❤️‍👨", horas: 120 },
+            { id: 12, texto: "Eres mi lugar favorito 🏠", horas: 132 },
+            { id: 13, texto: "Día 7: ¡Último día del ciclo! 😴", horas: 144 },
+            { id: 14, texto: "Mañana reiniciamos la magia. ¡Te amo! ✨", horas: 156 }
+        ];
 
-        const INTERVALO = 12 * 60 * 60 * 1000;
+        const HORAS_REINICIO = 168;
+
+        function activarNotificaciones() {
+            Notification.requestPermission().then(p => { 
+                if(p === "granted") document.getElementById('btnActivar').style.display = 'none';
+            });
+        }
 
         function actualizar() {
-            const cont = document.getElementById('contenedor');
+            const contenedor = document.getElementById('contenedor');
             const ahora = Date.now();
             
-            // Usamos una clave nueva "RESET_FINAL" para limpiar errores
-            let inicio = localStorage.getItem('RESET_FINAL');
-            let orden = JSON.parse(localStorage.getItem('ORDEN_FINAL'));
-
-            if (!inicio || !orden) {
+            // HE CAMBIADO ESTA LLAVE: 'buzon_super_final'
+            let inicio = localStorage.getItem('buzon_super_final');
+            
+            if (!inicio) {
                 inicio = ahora;
-                // Barajado simple
-                orden = [...frases].sort(() => Math.random() - 0.5);
-                localStorage.setItem('RESET_FINAL', inicio);
-                localStorage.setItem('ORDEN_FINAL', JSON.stringify(orden));
+                localStorage.setItem('buzon_super_final', inicio);
+            } else if ((ahora - parseInt(inicio)) > (HORAS_REINICIO * 3600000)) {
+                inicio = ahora;
+                localStorage.setItem('buzon_super_final', inicio);
+                frases.forEach(f => localStorage.removeItem('n_' + f.id));
             }
+            
+            // Limpiamos el contenedor solo si es necesario para evitar parpadeos
+            let contenidoHTML = '';
+            
+            frases.forEach(f => {
+                const millisDesbloqueo = parseInt(inicio) + (f.horas * 3600000);
+                const disponible = ahora >= millisDesbloqueo;
 
-            let html = '';
-            let proxima = false;
-
-            for (let i = 0; i < orden.length; i++) {
-                const tiempoD = parseInt(inicio) + (i * INTERVALO);
-                
-                if (ahora >= tiempoD) {
-                    html = <div class="carta"><span class="tag">✨ SORPRESA #${i+1}</span><p>${orden[i]}</p></div> + html;
-                } else if (!proxima) {
-                    const r = tiempoD - ahora;
-                    const h = Math.floor(r / 3600000);
-                    const m = Math.floor((r % 3600000) / 60000);
-                    const s = Math.floor((r % 60000) / 1000);
-                    
-                    html = `<div class="carta bloqueada">
-                                <span class="tag">🔒 PRÓXIMA SORPRESA EN:</span>
-                                <div class="proxima">${h}h ${m}m ${s}s</div>
-                            </div>` + html;
-                    proxima = true;
+                if (disponible) {
+                    contenidoHTML += <div class="carta"><span class="tiempo-tag">✨ Desbloqueado</span><p>${f.texto}</p></div>;
+                } else {
+                    const resta = millisDesbloqueo - ahora;
+                    const d = Math.floor(resta / 86400000);
+                    const h = Math.floor((resta % 86400000) / 3600000);
+                    const m = Math.floor((resta % 3600000) / 60000);
+                    const s = Math.floor((resta % 60000) / 1000);
+                    let textoTiempo = 🔒 En: ${d > 0 ? d + 'd ' : ''}${h}h ${m}m ${s}s;
+                    contenidoHTML += <div class="carta bloqueada"><span class="tiempo-tag">${textoTiempo}</span><p><i>Mensaje sorpresa preparado...</i></p></div>;
                 }
-            }
-            cont.innerHTML = html;
+            });
+            contenedor.innerHTML = contenidoHTML;
         }
 
         setInterval(actualizar, 1000);
         actualizar();
+        if (Notification.permission === "granted") document.getElementById('btnActivar').style.display = 'none';
     </script>
 </body>
 </html>
