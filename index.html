@@ -11,9 +11,9 @@
             background-size: cover; background-position: center; background-attachment: fixed;
             font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; color: var(--texto);
         }
-        h1 { margin: 15px 0; font-size: 1.5rem; text-align: center; background: rgba(255, 255, 255, 0.7); padding: 8px 20px; border-radius: 50px; backdrop-filter: blur(4px); }
-        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        #contenedor { width: 100%; max-width: 400px; }
+        h1 { margin: 15px 0; font-size: 1.5rem; text-align: center; background: rgba(255, 255, 255, 0.7); padding: 8px 20px; border-radius: 50px; backdrop-filter: blur(4px); z-index: 5; }
+        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 20px; cursor: pointer; z-index: 5; }
+        #contenedor { width: 100%; max-width: 400px; z-index: 5; }
         .carta { background: rgba(255, 255, 255, 0.9); padding: 15px; margin-bottom: 12px; border-radius: 15px; border-left: 6px solid var(--rosa); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .bloqueada { background: rgba(255, 255, 255, 0.6); border-left-color: #adb5bd; text-align: center; }
         .tag { display: block; font-size: 0.7rem; color: var(--rosa); font-weight: bold; margin-bottom: 4px; }
@@ -29,7 +29,8 @@
     <script>
         const frasesOriginales = ["¡Te amo! ❤️", "Eres mi sol ☀️", "Mi lugar favorito eres tú 🏠", "Eres mi vida 😍", "Te extraño 🌹", "Siempre juntos 👩‍❤️‍👨", "Eres magia ✨", "Mi mundo entero 🌎", "Gracias por existir 🤗", "Te pienso siempre 💭", "Eres mi sueño hecho realidad 🌙", "Eres mi todo 💖", "Te amo cada día más 📈", "Eres mi debilidad 💋", "Me haces muy feliz 😊", "Contigo todo es mejor 🌟", "Eres única 💎", "Mi corazón late por ti 💓", "Eres mi mejor regalo 🎁", "Te quiero hoy y siempre ♾️", "Eres mi paz 🕊️", "Brillas más que el sol ☀️", "Eres mi hogar 🗝️", "Te amo infinito 🌌", "Eres mi tesoro 💰", "Eres mi persona favorita 🥰", "Te amo demasiado 💘", "Mi razón de sonreír 😁", "Eres mi bendición 🙏", "Mi alma gemela 🧩", "Te amo locamente 🤪", "Eres mi motivación 💪", "Siempre en mi mente 🧠", "Eres mi alegría 😄", "Te adoro 🙇‍♂️", "Mi vida entera es tuya 💓", "Eres increíble 🌈", "Mi amor por ti no tiene fin 🛑", "Eres mi ángel 😇", "Te amo con toda mi alma 👻", "Eres mi tesoro 💍", "Te amo, preciosa 👸", "Eres mi suerte 🍀", "Te amo cada segundo ⏱️", "Mi destino eres tú 🛣️", "Eres perfecta 🎯", "Te amo, corazón 💖", "Eres mi cielo ☁️", "Siempre tú 👈", "Te amo, hermosa 🌸", "Mi refugio 🏰", "Eres mi luz 💡", "Te amo tanto 🔥", "Mi todo 🥇", "Eres mi calma 🌊", "Te amo, amor de mi vida 💍", "Eres mi realidad 👓", "Siempre te elegiré 🗳️", "Eres mi mejor aventura 🧭", "¡Completamos un mes de amor! ✨"];
 
-        const INTERVALO_MS = 12 * 3600000;
+        // 12 horas en milisegundos
+        const INTERVALO_MS = 12 * 60 * 60 * 1000;
 
         function barajar(array) {
             let a = [...array];
@@ -49,32 +50,30 @@
         function actualizar() {
             const cont = document.getElementById('contenedor');
             const ahora = Date.now();
-            let inicio = localStorage.getItem('I_V3');
-            let orden = JSON.parse(localStorage.getItem('O_V3'));
+            
+            // Usamos una clave nueva (I_V5) para resetear cualquier error anterior
+            let inicio = localStorage.getItem('I_V5');
+            let orden = JSON.parse(localStorage.getItem('O_V5'));
 
-            if (!inicio) {
+            if (!inicio || !orden) {
                 inicio = ahora;
                 orden = barajar(frasesOriginales);
-                localStorage.setItem('I_V3', inicio);
-                localStorage.setItem('O_V3', JSON.stringify(orden));
+                localStorage.setItem('I_V5', inicio);
+                localStorage.setItem('O_V5', JSON.stringify(orden));
             }
 
             let html = '';
             let proximaEncontrada = false;
 
+            // Recorremos las frases
             for (let i = 0; i < orden.length; i++) {
                 const tiempoD = parseInt(inicio) + (i * INTERVALO_MS);
                 
                 if (ahora >= tiempoD) {
-                    // Mensajes ya desbloqueados (del más nuevo al más viejo)
+                    // Si ya pasó el tiempo, mostramos la carta arriba
                     html = <div class="carta"><span class="tag">✨ SORPRESA #${i+1}</span><p>${orden[i]}</p></div> + html;
-                    
-                    if (!localStorage.getItem('n_'+i) && i > 0) {
-                        if (Notification.permission === "granted") new Notification("¡Nueva Carta! 💌");
-                        localStorage.setItem('n_'+i, "true");
-                    }
                 } else if (!proximaEncontrada) {
-                    // Solo mostramos UNA carta bloqueada (la siguiente)
+                    // La primera que aún no toca, es la cuenta regresiva
                     const r = tiempoD - ahora;
                     const h = Math.floor(r / 3600000);
                     const m = Math.floor((r % 3600000) / 60000);
@@ -91,8 +90,11 @@
         }
 
         if (Notification.permission === "granted") document.getElementById('btnNotif').style.display = 'none';
-        setInterval(actualizar, 1000);
+        
+        // Ejecución inmediata
         actualizar();
+        // Repetir cada segundo
+        setInterval(actualizar, 1000);
     </script>
 </body>
 </html>
