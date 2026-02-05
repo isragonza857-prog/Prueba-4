@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buzón de Amor 💌</title>
+    <style>
+        :root { --rosa: #ff4d6d; --fondo: #fff0f3; --texto: #590d22; }
+        body { background-color: var(--fondo); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--texto); }
+        h1 { margin: 20px 0; font-size: 1.6rem; text-align: center; }
+        #contenedor { width: 100%; max-width: 400px; }
+        .carta { background: white; padding: 20px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--rosa); }
+        .bloqueada { background: #eee; border-left-color: #adb5bd; opacity: 0.7; }
+        .tag { display: block; font-size: 0.75rem; color: var(--rosa); font-weight: bold; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>💌 Nuestro Buzón Mágico</h1>
+    <div id="contenedor">Cargando tus mensajes...</div>
+
+    <script>
+        const frases = [
+            { id: 1, texto: "¡Empieza nuestra semana! ❤️", h: 0 },
+            { id: 2, texto: "Eres lo mejor de mi día 😍", h: 12 },
+            { id: 3, texto: "Mensajito día 2 🌹", h: 24 },
+            { id: 4, texto: "Te amo muchísimo 💋", h: 36 },
+            { id: 5, texto: "Día 3: Eres especial ✨", h: 48 },
+            { id: 6, texto: "Tu sonrisa me encanta 💖", h: 60 },
+            { id: 7, texto: "Día 4: Mitad de semana 🌎", h: 72 },
+            { id: 8, texto: "Gracias por estar aquí 🤗", h: 84 },
+            { id: 9, texto: "Día 5: ¡Casi viernes! 🎁", h: 96 },
+            { id: 10, texto: "Me encantas cada segundo 😍", h: 108 },
+            { id: 11, texto: "Día 6: Mi corazón es tuyo 👩‍❤️‍👨", h: 120 },
+            { id: 12, texto: "Eres mi lugar favorito 🏠", h: 132 },
+            { id: 13, texto: "Día 7: ¡Último día! 😴", h: 144 },
+            { id: 14, texto: "¡Mañana reiniciamos! ✨", h: 156 }
+        ];
+
+        function mostrar() {
+            const cont = document.getElementById('contenedor');
+            const ahora = Date.now();
+            
+            // Forzamos un inicio limpio con una nueva llave
+            let inicio = localStorage.getItem('ID_RESCATE_TOTAL');
+            if (!inicio) {
+                inicio = ahora;
+                localStorage.setItem('ID_RESCATE_TOTAL', inicio);
+            }
+
+            // Si ya pasaron los 7 días (168h), reiniciamos
+            if ((ahora - parseInt(inicio)) > (168 * 3600000)) {
+                inicio = ahora;
+                localStorage.setItem('ID_RESCATE_TOTAL', inicio);
+            }
+            
+            let html = '';
+            frases.forEach(f => {
+                const desc = parseInt(inicio) + (f.h * 3600000);
+                if (ahora >= desc) {
+                    html += `<div class="carta"><span class="tag">✨ DESBLOQUEADO</span><p>${f.texto}</p></div>`;
+                } else {
+                    const r = desc - ahora;
+                    const d = Math.floor(r / 86400000);
+                    const hr = Math.floor((r % 86400000) / 3600000);
+                    const m = Math.floor((r % 3600000) / 60000);
+                    html += `<div class="carta bloqueada"><span class="tag">🔒 Disponible en: ${d}d ${hr}h ${m}m</span><p><i>Mensaje sorpresa...</i></p></div>`;
+                }
+            });
+            cont.innerHTML = html;
+        }
+
+        // Ejecutar de inmediato y luego cada minuto
+        mostrar();
+        setInterval(mostrar, 60000);
+    </script>
+</body>
+</html>
