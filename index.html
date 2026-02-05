@@ -7,13 +7,51 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <style>
-        :root { --rosa: #ff4d6d; --fondo: #fff0f3; --texto: #590d22; }
-        body { background-color: var(--fondo); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--texto); overflow-x: hidden; }
-        h1 { margin: 20px 0; font-size: 1.6rem; text-align: center; z-index: 2; }
-        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 25px; cursor: pointer; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        :root { --rosa: #ff4d6d; --fondo-fallback: #fff0f3; --texto: #590d22; }
+        
+        body { 
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+                              url('https://i.postimg.cc/LXs6wcwy/65a54829cbbe07a6302459f35420ec2e.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-color: var(--fondo-fallback);
+            font-family: sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            color: var(--texto); 
+            overflow-x: hidden;
+        }
+
+        h1 { 
+            margin: 20px 0; 
+            font-size: 1.6rem; 
+            text-align: center; 
+            z-index: 2; 
+            background: rgba(255, 255, 255, 0.85);
+            padding: 10px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 25px; cursor: pointer; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
         #contenedor { width: 100%; max-width: 400px; z-index: 2; }
-        .carta { background: white; padding: 20px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--rosa); }
-        .bloqueada { background: #eee; border-left-color: #adb5bd; opacity: 0.7; }
+
+        .carta { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            border-left: 8px solid var(--rosa); 
+        }
+
+        .bloqueada { background: rgba(240, 240, 240, 0.9); border-left-color: #adb5bd; opacity: 0.9; }
         .tag { display: block; font-size: 0.75rem; color: var(--rosa); font-weight: bold; margin-bottom: 5px; }
         .corazon-bg { position: fixed; top: -10%; font-size: 20px; user-select: none; pointer-events: none; animation: fall linear forwards; z-index: 1; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
@@ -23,12 +61,12 @@
 
     <h1>💌 Nuestro Buzón Mágico</h1>
     <button class="btn-notif" id="btnNotif" onclick="pedirPermiso()">🔔 Activar Notificaciones</button>
-    <div id="contenedor">Cargando tus mensajes...</div>
+    <div id="contenedor">Cargando...</div>
 
     <script>
         const frases = [
-            { id: 1, texto: "Eres la razón de mi sonreir ❤️", h: 0 },
-            { id: 2, texto: "Hoy te veias demasiado linda✨", h: 12 },
+            { id: 1, texto: "¡Empieza nuestra semana! ❤️", h: 0 },
+            { id: 2, texto: "Eres lo mejor de mi día 😍", h: 12 },
             { id: 3, texto: "Mensajito día 2 🌹", h: 24 },
             { id: 4, texto: "Te amo muchísimo 💋", h: 36 },
             { id: 5, texto: "Día 3: Eres especial ✨", h: 48 },
@@ -47,7 +85,7 @@
             Notification.requestPermission().then(p => {
                 if(p === "granted") {
                     document.getElementById('btnNotif').style.display = 'none';
-                    new Notification("¡Buzón Activado! ❤️", { body: "Te avisaré cuando lleguen nuevas sorpresas." });
+                    new Notification("¡Buzón Activado! ❤️");
                 }
             });
         }
@@ -85,11 +123,9 @@
                 const desc = parseInt(inicio) + (f.h * 3600000);
                 if (ahora >= desc) {
                     html += `<div class="carta"><span class="tag">✨ DESBLOQUEADO</span><p>${f.texto}</p></div>`;
-                    
-                    // Lógica de Notificación
                     if (!localStorage.getItem('aviso_' + f.id) && f.h > 0) {
                         if (Notification.permission === "granted") {
-                            new Notification("¡Nueva Carta! 💌", { body: "Tienes un mensaje nuevo en tu buzón." });
+                            new Notification("¡Nueva Carta! 💌", { body: "Tienes un mensaje nuevo." });
                         }
                         localStorage.setItem('aviso_' + f.id, "true");
                     }
