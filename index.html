@@ -9,138 +9,90 @@
         body { 
             background-image: url('https://i.postimg.cc/LXs6wcwy/65a54829cbbe07a6302459f35420ec2e.jpg');
             background-size: cover; background-position: center; background-attachment: fixed;
-            font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--texto); overflow-x: hidden;
+            font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; color: var(--texto);
         }
-        h1 { margin: 20px 0; font-size: 1.6rem; text-align: center; z-index: 2; background: rgba(255, 255, 255, 0.7); padding: 10px 25px; border-radius: 50px; backdrop-filter: blur(4px); }
-        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 25px; cursor: pointer; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        #contenedor { width: 100%; max-width: 400px; z-index: 2; }
-        .carta { background: rgba(255, 255, 255, 0.9); padding: 20px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-left: 8px solid var(--rosa); backdrop-filter: blur(5px); }
-        .bloqueada { background: rgba(240, 240, 240, 0.8); border-left-color: #adb5bd; }
-        .tag { display: block; font-size: 0.75rem; color: var(--rosa); font-weight: bold; margin-bottom: 5px; }
-        .corazon-bg { position: fixed; top: -10%; font-size: 20px; user-select: none; pointer-events: none; animation: fall linear forwards; z-index: 1; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        h1 { margin: 15px 0; font-size: 1.5rem; text-align: center; background: rgba(255, 255, 255, 0.7); padding: 8px 20px; border-radius: 50px; backdrop-filter: blur(4px); }
+        .btn-notif { background: var(--rosa); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; margin-bottom: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        #contenedor { width: 100%; max-width: 400px; }
+        .carta { background: rgba(255, 255, 255, 0.9); padding: 15px; margin-bottom: 12px; border-radius: 15px; border-left: 6px solid var(--rosa); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .bloqueada { background: rgba(255, 255, 255, 0.6); border-left-color: #adb5bd; text-align: center; }
+        .tag { display: block; font-size: 0.7rem; color: var(--rosa); font-weight: bold; margin-bottom: 4px; }
+        .proxima { font-weight: bold; font-size: 1.1rem; color: var(--texto); margin: 5px 0; }
     </style>
 </head>
 <body>
 
-    <h1>💌 Nuestro Buzón Mágico</h1>
+    <h1>💌 Nuestro Buzón</h1>
     <button class="btn-notif" id="btnNotif" onclick="pedirPermiso()">🔔 Activar Notificaciones</button>
-    <div id="contenedor">Cargando magia aleatoria...</div>
+    <div id="contenedor"></div>
 
     <script>
-        const frasesOriginales = [
-            "1. ¡Te amo! ❤️", "2. Eres mi sol ☀️", "3. Mi lugar favorito eres tú 🏠",
-            "4. Eres mi vida 😍", "5. Te extraño 🌹", "6. Siempre juntos 👩‍❤️‍👨",
-            "7. Eres magia ✨", "8. Mi mundo entero 🌎", "9. Gracias por existir 🤗",
-            "10. Te pienso siempre 💭", "11. Eres mi sueño hecho realidad 🌙", "12. Eres mi todo 💖",
-            "13. Te amo cada día más 📈", "14. Eres mi debilidad 💋", "15. Me haces muy feliz 😊",
-            "16. Contigo todo es mejor 🌟", "17. Eres única 💎", "18. Mi corazón late por ti 💓",
-            "19. Eres mi mejor regalo 🎁", "20. Te quiero hoy y siempre ♾️", "21. Eres mi paz 🕊️",
-            "22. Brillas más que el sol ☀️", "23. Eres mi hogar 🗝️", "24. Te amo infinito 🌌",
-            "25. Eres mi tesoro 💰", "26. Eres mi persona favorita 🥰", "27. Te amo demasiado 💘",
-            "28. Mi razón de sonreír 😁", "29. Eres mi bendición 🙏", "30. Mi alma gemela 🧩",
-            "31. Te amo locamente 🤪", "32. Eres mi motivación 💪", "33. Siempre en mi mente 🧠",
-            "34. Eres mi alegría 😄", "35. Te adoro 🙇‍♂️", "36. Mi vida entera es tuya 💓",
-            "37. Eres increíble 🌈", "38. Mi amor por ti no tiene fin 🛑", "39. Eres mi ángel 😇",
-            "40. Te amo con toda mi alma 👻", "41. Eres mi tesoro 💍", "42. Te amo, preciosa 👸",
-            "43. Eres mi suerte 🍀", "44. Te amo cada segundo ⏱️", "45. Mi destino eres tú 🛣️",
-            "46. Eres perfecta 🎯", "47. Te amo, corazón 💖", "48. Eres mi cielo ☁️",
-            "49. Siempre tú 👈", "50. Te amo, hermosa 🌸", "51. Mi refugio 🏰",
-            "52. Eres mi luz 💡", "53. Te amo tanto 🔥", "54. Mi todo 🥇",
-            "55. Eres mi calma 🌊", "56. Te amo, amor de mi vida 💍", "57. Eres mi realidad 👓",
-            "58. Siempre te elegiré 🗳️", "59. Eres mi mejor aventura 🧭", "60. ¡Completamos un mes de amor! ✨"
-        ];
+        const frasesOriginales = ["¡Te amo! ❤️", "Eres mi sol ☀️", "Mi lugar favorito eres tú 🏠", "Eres mi vida 😍", "Te extraño 🌹", "Siempre juntos 👩‍❤️‍👨", "Eres magia ✨", "Mi mundo entero 🌎", "Gracias por existir 🤗", "Te pienso siempre 💭", "Eres mi sueño hecho realidad 🌙", "Eres mi todo 💖", "Te amo cada día más 📈", "Eres mi debilidad 💋", "Me haces muy feliz 😊", "Contigo todo es mejor 🌟", "Eres única 💎", "Mi corazón late por ti 💓", "Eres mi mejor regalo 🎁", "Te quiero hoy y siempre ♾️", "Eres mi paz 🕊️", "Brillas más que el sol ☀️", "Eres mi hogar 🗝️", "Te amo infinito 🌌", "Eres mi tesoro 💰", "Eres mi persona favorita 🥰", "Te amo demasiado 💘", "Mi razón de sonreír 😁", "Eres mi bendición 🙏", "Mi alma gemela 🧩", "Te amo locamente 🤪", "Eres mi motivación 💪", "Siempre en mi mente 🧠", "Eres mi alegría 😄", "Te adoro 🙇‍♂️", "Mi vida entera es tuya 💓", "Eres increíble 🌈", "Mi amor por ti no tiene fin 🛑", "Eres mi ángel 😇", "Te amo con toda mi alma 👻", "Eres mi tesoro 💍", "Te amo, preciosa 👸", "Eres mi suerte 🍀", "Te amo cada segundo ⏱️", "Mi destino eres tú 🛣️", "Eres perfecta 🎯", "Te amo, corazón 💖", "Eres mi cielo ☁️", "Siempre tú 👈", "Te amo, hermosa 🌸", "Mi refugio 🏰", "Eres mi luz 💡", "Te amo tanto 🔥", "Mi todo 🥇", "Eres mi calma 🌊", "Te amo, amor de mi vida 💍", "Eres mi realidad 👓", "Siempre te elegiré 🗳️", "Eres mi mejor aventura 🧭", "¡Completamos un mes de amor! ✨"];
 
-        const INTERVALO_HORAS = 12;
+        const INTERVALO_MS = 12 * 3600000;
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error", err));
+        function barajar(array) {
+            let a = [...array];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
         }
 
         function pedirPermiso() {
             Notification.requestPermission().then(p => {
-                if(p === "granted") {
-                    document.getElementById('btnNotif').style.display = 'none';
-                    enviarNotificacion("¡Buzón Activado! ❤️", "Recibirás sorpresas cada 12 horas.");
-                }
+                if(p === "granted") document.getElementById('btnNotif').style.display = 'none';
             });
         }
 
-        function enviarNotificacion(titulo, mensaje) {
-            if (Notification.permission === "granted" && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.ready.then(reg => {
-                    reg.showNotification(titulo, {
-                        body: mensaje,
-                        icon: 'https://cdn-icons-png.flaticon.com/512/833/833472.png',
-                        badge: 'https://cdn-icons-png.flaticon.com/512/833/833472.png',
-                        vibrate: [200, 100, 200]
-                    });
-                });
-            }
-        }
-
-        function barajar(array) {
-            let actual = [...array];
-            for (let i = actual.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [actual[i], actual[j]] = [actual[j], actual[i]];
-            }
-            return actual;
-        }
-
-        function crearCorazon() {
-            const c = document.createElement('div');
-            c.className = 'corazon-bg';
-            c.innerHTML = '❤️';
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.animationDuration = Math.random() * 3 + 2 + 's';
-            c.style.opacity = 0.6;
-            document.body.appendChild(c);
-            setTimeout(() => c.remove(), 5000);
-        }
-        setInterval(crearCorazon, 600);
-
-        function mostrar() {
+        function actualizar() {
             const cont = document.getElementById('contenedor');
             const ahora = Date.now();
-            
-            let inicio = localStorage.getItem('INICIO_RANDOM_FINAL');
-            let frasesOrdenadas = JSON.parse(localStorage.getItem('ORDEN_FRASES_FINAL'));
-            const tiempoTotal = frasesOriginales.length * INTERVALO_HORAS * 3600000;
-            
-            if (!inicio || (ahora - parseInt(inicio)) > tiempoTotal) {
-                inicio = ahora.toString();
-                frasesOrdenadas = barajar(frasesOriginales);
-                localStorage.setItem('INICIO_RANDOM_FINAL', inicio);
-                localStorage.setItem('ORDEN_FRASES_FINAL', JSON.stringify(frasesOrdenadas));
-                frasesOriginales.forEach((, i) => localStorage.removeItem('vn60' + i));
+            let inicio = localStorage.getItem('I_V3');
+            let orden = JSON.parse(localStorage.getItem('O_V3'));
+
+            if (!inicio) {
+                inicio = ahora;
+                orden = barajar(frasesOriginales);
+                localStorage.setItem('I_V3', inicio);
+                localStorage.setItem('O_V3', JSON.stringify(orden));
             }
 
             let html = '';
-            frasesOrdenadas.forEach((texto, i) => {
-                const tiempoDesbloqueo = parseInt(inicio) + (i * INTERVALO_HORAS * 3600000);
+            let proximaEncontrada = false;
+
+            for (let i = 0; i < orden.length; i++) {
+                const tiempoD = parseInt(inicio) + (i * INTERVALO_MS);
                 
-                if (ahora >= tiempoDesbloqueo) {
-                    html += <div class="carta"><span class="tag">✨ SORPRESA #${i+1}</span><p>${texto}</p></div>;
-                    if (!localStorage.getItem('vn60_' + i) && i > 0) {
-                        enviarNotificacion("¡Nueva Carta! 💌", "Tienes un mensaje nuevo esperándote.");
-                        localStorage.setItem('vn60_' + i, "true");
+                if (ahora >= tiempoD) {
+                    // Mensajes ya desbloqueados (del más nuevo al más viejo)
+                    html = <div class="carta"><span class="tag">✨ SORPRESA #${i+1}</span><p>${orden[i]}</p></div> + html;
+                    
+                    if (!localStorage.getItem('n_'+i) && i > 0) {
+                        if (Notification.permission === "granted") new Notification("¡Nueva Carta! 💌");
+                        localStorage.setItem('n_'+i, "true");
                     }
-                } else {
-                    const r = tiempoDesbloqueo - ahora;
-                    const d = Math.floor(r / 86400000);
-                    const hr = Math.floor((r % 86400000) / 3600000);
+                } else if (!proximaEncontrada) {
+                    // Solo mostramos UNA carta bloqueada (la siguiente)
+                    const r = tiempoD - ahora;
+                    const h = Math.floor(r / 3600000);
                     const m = Math.floor((r % 3600000) / 60000);
                     const s = Math.floor((r % 60000) / 1000);
-                    html += <div class="carta bloqueada"><span class="tag">🔒 PRÓXIMA SORPRESA EN:</span><p>${d}d ${hr}h ${m}m ${s}s</p></div>;
+                    
+                    html = `<div class="carta bloqueada">
+                                <span class="tag">🔒 PRÓXIMA SORPRESA EN:</span>
+                                <div class="proxima">${h}h ${m}m ${s}s</div>
+                            </div>` + html;
+                    proximaEncontrada = true;
                 }
-            });
+            }
             cont.innerHTML = html;
         }
 
         if (Notification.permission === "granted") document.getElementById('btnNotif').style.display = 'none';
-        mostrar();
-        setInterval(mostrar, 1000);
+        setInterval(actualizar, 1000);
+        actualizar();
     </script>
 </body>
 </html>
